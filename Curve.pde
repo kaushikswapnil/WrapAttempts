@@ -93,13 +93,13 @@ class Curve
            }
         }
 
-        recordNode = null;
-        do
-        {
-          int randomNodeIndex = (int)(random(m_Nodes.size()));
-          recordNode = m_Nodes.get(randomNodeIndex);
-        }
-        while(!recordNode.IsCorner());
+        //recordNode = null;
+        //do
+        //{
+        //  int randomNodeIndex = (int)(random(m_Nodes.size()));
+        //  recordNode = m_Nodes.get(randomNodeIndex);
+        //}
+        //while(!recordNode.IsCorner());
         
         if (recordNode != null)
         {
@@ -107,22 +107,38 @@ class Curve
           Node nodeA = recordNode;
           Node nodeB;
           
+          boolean bIsLeftNode;
           if (IsLesserWithEpsilon(random(1.0), 0.5f))
           {
             nodeB = nodeA.m_Left;
+            bIsLeftNode = true;
           }
           else
           {
             nodeB = nodeA.m_Right;
+            bIsLeftNode = false;
           }
           
           PVector edgeDir = PVector.sub(nodeB.m_Position, nodeA.m_Position);
           float edgeDist = edgeDir.mag();
           edgeDir.normalize();
           
-          Node newNode = new Node(PVector.add(nodeA.m_Position, PVector.mult(edgeDir, edgeDist/2)), nodeA, nodeB);
-          nodeA.m_Right = newNode;
-          nodeB.m_Left = newNode;
+          Node newNode = new Node(PVector.add(nodeA.m_Position, PVector.mult(edgeDir, edgeDist/2)), null, null);
+          
+          if (bIsLeftNode)
+          {
+            nodeA.m_Left = newNode;
+            newNode.m_Right = nodeA;
+            newNode.m_Left = nodeB;
+            nodeB.m_Right = newNode;
+          }
+          else
+          {
+             nodeA.m_Right = newNode;
+             newNode.m_Left = nodeA;
+             newNode.m_Right = nodeB;
+             nodeB.m_Left = newNode; 
+          }
           
           m_Nodes.add(newNode);
         }
@@ -131,18 +147,18 @@ class Curve
    
    void Display()
    {
+      strokeWeight(3);
       for (Node node : m_Nodes)
       {
          if (node.m_Left != null)
          {
-            line(node.m_Position.x, node.m_Position.y, node.m_Left.m_Position.x, node.m_Left.m_Position.y); 
+            line(node.m_Position.x, node.m_Position.y, node.m_Left.m_Position.x, node.m_Left.m_Position.y);
          }
          
          if (node.m_Right != null)
          {
-            line(node.m_Position.x, node.m_Position.y, node.m_Right.m_Position.x, node.m_Right.m_Position.y); 
+            line(node.m_Position.x, node.m_Position.y, node.m_Right.m_Position.x, node.m_Right.m_Position.y);
          }
-         
          //fill(0);
          //textAlign(CENTER);
          //String toPrint = ""+node.m_Position.x+" "+node.m_Position.y+" "+node.m_Position.z+"";

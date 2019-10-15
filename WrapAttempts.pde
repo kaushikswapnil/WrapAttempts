@@ -1,12 +1,12 @@
-float g_RepulsionRange = 300.0f;
+float g_RepulsionRange = 15.0f;
 
 float g_NeighbourIdealProximityMin = 1.0f;
-float g_NeighbourIdealProximityMax = 30.0f;
+float g_NeighbourIdealProximityMax = 10.0f;
 float g_NeighbourIdealProximity = 3.0f;
 
 boolean g_LimitIdealSpringDist = true;
 
-float g_ChanceToAddNewNode = 0.004f;
+float g_ChanceToAddNewNode = 0.04f;
 
 float g_SpringConstant = 0.001f;
 float g_SpringFrictionCoeff = 0.4f;
