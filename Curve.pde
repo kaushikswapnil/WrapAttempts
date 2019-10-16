@@ -12,6 +12,11 @@ class Curve
       m_Nodes = new ArrayList<Node>();
    }
    
+   void SetNodes(ArrayList<Node> newNodes)
+   {
+      m_Nodes = newNodes; 
+   }
+   
    void Update()
    {
       for (Node node : m_Nodes)

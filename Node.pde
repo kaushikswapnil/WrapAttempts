@@ -68,7 +68,7 @@ class Node
    void Display()
    {
       pushMatrix();
-      fill(250, 0, 0);
+      fill(40);
       noStroke();
       ellipse(m_Position.x, m_Position.y, m_Diameter, m_Diameter);
       popMatrix();
@@ -111,9 +111,13 @@ class Node
       {
         idealDist = m_Left.m_Position.dist(m_Position);
       }
-      else// if(hasRightNbhr)
+      else if(hasRightNbhr)
       {
         idealDist = m_Right.m_Position.dist(m_Position);
+      }
+      else
+      {
+        idealDist = (g_NeighbourIdealProximityMin + g_NeighbourIdealProximityMax)/2;
       }
       
       if (g_LimitIdealSpringDist)
