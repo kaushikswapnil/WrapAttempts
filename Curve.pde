@@ -82,7 +82,7 @@ class Curve
         //int randomNodeIndex = (int)(random(m_Nodes.size()));
         
         Node recordNode = null;
-        float recordAngle = -10000.0f;
+        float recordAngle = 0.0f;
         
         for (Node node : m_Nodes)
         {
@@ -90,7 +90,7 @@ class Curve
            if (node.IsCorner())
            {
              float cornerAngle = node.GetCornerAngle();
-             if (IsGreaterWithEpsilon(cornerAngle, recordAngle))
+             if (IsGreaterWithEpsilon(abs(cornerAngle), abs(recordAngle)))
              {
                 recordAngle = cornerAngle; 
                 recordNode = node;
