@@ -68,7 +68,7 @@ class Node
    void Display()
    {
       pushMatrix();
-      fill(40);
+      fill(0, 0,  255);
       noStroke();
       ellipse(m_Position.x, m_Position.y, m_Diameter, m_Diameter);
       popMatrix();

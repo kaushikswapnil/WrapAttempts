@@ -23,9 +23,11 @@ PVector left = new PVector(-1, 0);
 
 int g_ProgramMode;
 
+boolean g_IsEditorMode = true;
+
 Button g_CPGButton;
 
-boolean isDraggingPoint = false;
+
 
 void setup()
 {
@@ -62,9 +64,11 @@ void setup()
   
   g_ProgramMode = 0;
   
-  g_CurveConstructor = new CurveConstructor();
-  
-  g_CPGButton = new ChangeProgramModeButton(20, 20);
+  if (g_IsEditorMode)
+  {
+   g_CurveConstructor = new CurveConstructor();
+   g_CPGButton = new ChangeProgramModeButton(20, 20); 
+  }
 }
 
 void draw()
@@ -73,14 +77,24 @@ void draw()
   {
     case 0://Curve
     UpdateCurve();
+    if (g_IsEditorMode)
+    {
+      g_CPGButton.Display();
+    }
     break;
     
     case 1://Curve Constructor
-    UpdateCurveConstructor();
+    if (g_IsEditorMode)
+    {
+      UpdateCurveConstructor();
+      g_CPGButton.Display();
+    }
+    else
+    {
+      g_IsEditorMode = false;
+    }
     break;
   }
-  
-  g_CPGButton.Display();
 }
 
 void UpdateCurve()
@@ -97,28 +111,95 @@ void UpdateCurveConstructor()
 {
   background(255);
 
+  text("Akways draw connections from Right -> Left", width/2 - 50.0f, 50);
   g_CurveConstructor.Display();
 }
 
 void mouseClicked()
 {
+  if(!g_IsEditorMode)
+    return;
+  
   if (mouseButton == LEFT)
   {
     if (g_CPGButton.IsPositionInsideButtonArea(mouseX, mouseY))
     {
       g_CPGButton.OnClicked();
     }
-    else
+    else if (g_ProgramMode == 1)
     {
       if (g_CurveConstructor.IsFreePosition(mouseX, mouseY))
       {
-        g_CurveConstructor.AddNode(mouseX, mouseY);
+         g_CurveConstructor.AddNode(mouseX, mouseY); 
       }
+    }
+  }
+  else if (mouseButton == RIGHT && g_ProgramMode == 1)
+  {
+    PVector mousePos = new PVector(mouseX, mouseY);
+    for (int iter = 0; iter < g_CurveConstructor.m_Nodes.size(); ++iter)
+    {
+       if (IsLesserOrEqualWithEpsilon(g_CurveConstructor.m_Nodes.get(iter).GetClosestDistanceToNodeSurface(mousePos), 0.0f))
+       {
+         g_CurveConstructor.m_Nodes.remove(iter);
+         break;
+       }
     }
   }
 }
 
 void mouseDragged()
 {
-  
+  if (!g_IsEditorMode)
+    return;
+   
+   if (g_ProgramMode == 1)
+   {
+     g_CurveConstructor.OnMouseDragged(mouseX, mouseY);
+   }
+}
+
+void mouseReleased()
+{
+   if (!g_IsEditorMode)
+   return;
+   
+   if (g_ProgramMode == 1)
+   {
+     g_CurveConstructor.OnMouseReleased(mouseX, mouseY);
+   }
+}
+
+void keyPressed()
+{
+   boolean switchEditorMode = key == ' '; 
+   
+   if (!switchEditorMode)
+   {
+      return; 
+   }
+   
+   if (g_IsEditorMode)
+   {
+     if (g_ProgramMode == 1)
+     {
+       g_CurveConstructor.TransferNodesToCurve();
+     }
+     else
+     {
+       g_CPGButton = null;
+       g_CurveConstructor = null;
+     }
+   }
+   else if (g_ProgramMode == 0)
+   {
+     g_CurveConstructor = new CurveConstructor();
+     g_CPGButton = new ChangeProgramModeButton(20, 20); 
+   }
+   else
+   {
+     return; //Dont switch editor mode
+   }
+   
+   g_IsEditorMode = !g_IsEditorMode;
 }
