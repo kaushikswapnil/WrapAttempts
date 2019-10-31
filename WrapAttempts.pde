@@ -23,11 +23,11 @@ PVector left = new PVector(-1, 0);
 
 int g_ProgramMode;
 
-boolean g_IsEditorMode = true;
+boolean g_IsEditorMode = false;
 
 Button g_CPGButton;
 
-
+int g_RenderFrameGap = 30;
 
 void setup()
 {
@@ -105,6 +105,11 @@ void UpdateCurve()
   
   g_Curve.Update();
   g_Curve.Display();
+  
+  if (frameCount % g_RenderFrameGap == 0)
+  {
+     saveFrame("render\\wrap_####.png"); 
+  }
 }
 
 void UpdateCurveConstructor()
